@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background: #f4f4f4;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+        header {
+            background: #35424a;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        nav {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        nav a, .theme-toggle {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        nav a:hover, .theme-toggle:hover {
+            color: #ffcc00; /* Highlight color on hover */
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            max-width: 1200px;
+        }
+        .product-details {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #35424a;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #ffcc00; /* Highlight color on hover */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Product Details</h1>
+    <nav>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Toggle Theme</button>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="product-details" id="productDetails"></div>
+    <button onclick="addToCart()">Add to Cart</button>
+</div>
+
+<script>
+    function getProductId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id');
+    }
+
+    function loadProduct() {
+        const productId = getProductId();
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const product = products[productId];
+
+        if (product) {
+            const productDetails = document.getElementById('productDetails');
+            productDetails.innerHTML = `
+                <h2>${product.name}</h2>
+                <img src="placeholder.jpg" alt="${product.name}">
+                <p><strong>Tags:</strong> ${product.tags.join(', ')}</p>
+                <p>${product.description || 'No description available.'}</p>
+            `;
+        } else {
+            document.body.innerHTML = '<h2>Product not found.</h2>';
+        }
+    }
+
+    function addToCart() {
+        alert("Product added to cart! (Functionality not implemented)");
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('dark');
+    }
+
+    // Load product on page load
+    loadProduct();
+</script>
+
+</body>
+</html>

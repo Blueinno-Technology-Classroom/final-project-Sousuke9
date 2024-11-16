@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background: #35424a;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #ffcc00; /* Highlight color on hover */
+        }
+        .message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button onclick="login()">Login</button>
+    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+    <div class="message" id="loginMessage"></div>
+</div>
+
+<script>
+    function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const messageBox = document.getElementById('loginMessage');
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (user) {
+            localStorage.setItem('loggedInUser', JSON.stringify(user)); // Store logged-in user
+            messageBox.style.display = 'block';
+            messageBox.textContent = "Login successful! Please complete the verification.";
+            setTimeout(() => {
+                verifyUser(); // Call the verification function
+            }, 1500); // Wait before verification
+        } else {
+            messageBox.style.display = 'block';
+            messageBox.textContent = "Invalid email or password.";
+        }
+    }
+
+    function verifyUser() {
+        const verificationInput = prompt("Please type 'YES' to verify you are not a robot:");
+        if (verificationInput && verificationInput.toUpperCase() === 'YES') {
+            alert("Verification successful!"); // Simulate successful verification
+            window.location.href = 'products.html'; // Redirect to products page
+        } else {
+            alert("Verification failed. Please try logging in again.");
+            localStorage.removeItem('loggedInUser'); // Clear the logged-in user
+        }
+    }
+
+    // Check if user is already logged in
+    if (localStorage.getItem('loggedInUser')) {
+        window.location.href = 'products.html'; // Redirect if already logged in
+    }
+</script>
+
+</body>
+</html>

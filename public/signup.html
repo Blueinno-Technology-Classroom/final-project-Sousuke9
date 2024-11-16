@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background: #35424a;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #ffcc00; /* Highlight color on hover */
+        }
+        .message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sign Up</h2>
+    <input type="text" id="signupName" placeholder="Full Name" required>
+    <input type="email" id="signupEmail" placeholder="Email" required>
+    <input type="password" id="signupPassword" placeholder="Password" required>
+    <button onclick="signup()">Sign Up</button>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+    <div class="message" id="signupMessage"></div>
+</div>
+
+<script>
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    function isStrongPassword(password) {
+        return password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
+    }
+
+    function signup() {
+        const name = document.getElementById('signupName').value;
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const messageBox = document.getElementById('signupMessage');
+
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userExists = users.find(u => u.email === email);
+
+        // Validate email
+        if (!isValidEmail(email)) {
+            messageBox.style.display = 'block';
+            messageBox.textContent = "Please enter a valid email address.";
+            return;
+        }
+
+        // Validate password
+        if (!isStrongPassword(password)) {
+            messageBox.style.display = 'block';
+            messageBox.textContent = "Password must be at least 8 characters long and contain at least one uppercase letter and one number.";
+            return;
+        }
+
+        if (userExists) {
+            messageBox.style.display = 'block';
+            messageBox.textContent = "User already exists!";
+        } else {
+            users.push({ name, email, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            messageBox.style.display = 'block';
+            messageBox.textContent = "Sign up successful! Please verify your email."; // Simulated verification
+            setTimeout(() => {
+                window.location.href = 'login.html'; // Redirect to login page
+            }, 1500); // Redirect after 1.5 seconds
+        }
+    }
+</script>
+
+</body>
+</html>

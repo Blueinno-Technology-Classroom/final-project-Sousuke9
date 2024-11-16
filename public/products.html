@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Store</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background: #f4f4f4;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+        header {
+            background: #35424a;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        nav {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        nav a, .theme-toggle {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        nav a:hover, .theme-toggle:hover {
+            color: #ffcc00; /* Highlight color on hover */
+        }
+        .container {
+            flex: 1; /* Allows the container to grow and take available space */
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            max-width: 1200px;
+        }
+        .search {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search input {
+            padding: 12px;
+            width: 80%;
+            max-width: 600px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        .search input:focus {
+            border-color: #ffcc00;
+            outline: none;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .product h3 {
+            margin: 10px 0;
+            font-size: 20px;
+            color: #35424a;
+        }
+        .product p {
+            color: #777;
+        }
+        footer {
+            background: #35424a;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 0;
+        }
+        .logout-button {
+            background: #e74c3c;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .logout-button:hover {
+            background: #c0392b; /* Darker red on hover */
+        }
+        .create-product-button {
+            background: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .create-product-button:hover {
+            background: #218838; /* Darker green on hover */
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+            .search input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Our Online Store</h1>
+    <nav>
+        <span id="authLinks">
+            <a href="login.html" id="loginLink">Login</a>
+            <a href="signup.html" id="signupLink">Sign Up</a>
+        </span>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Toggle Theme</button>
+        <button class="logout-button" id="logoutButton" onclick="logout()" style="display: none;">Logout</button>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="search">
+        <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
+    </div>
+    <h2>Our Products</h2>
+    <div class="products" id="productList"></div>
+    <button class="create-product-button" id="createProductBtn" style="display: none;" onclick="createProduct()">Create New Product</button>
+</div>
+
+<footer>
+    <p>&copy; 2024 Online Store</p>
+</footer>
+
+<script>
+    function loadProducts() {
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const productList = document.getElementById('productList');
+        productList.innerHTML = ''; // Clear existing products
+        products.forEach((product, index) => {
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product';
+            productDiv.innerHTML = `<h3><a href="product.html?id=${index}">${product.name}</a></h3><p>$20.00</p>`;
+            productList.appendChild(productDiv);
+        });
+    }
+
+    function searchProducts() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const products = JSON.parse(localStorage.getItem('products')) || [];
+        const productList = document.getElementById('productList');
+        productList.innerHTML = ''; // Clear existing products
+
+        if (query === "") {
+            loadProducts(); // Show all products if no search query
+        } else {
+            products.forEach((product, index) => {
+                if (product.name.toLowerCase().includes(query)) {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product';
+                    productDiv.innerHTML = `<h3><a href="product.html?id=${index}">${product.name}</a></h3><p>$20.00</p>`;
+                    productList.appendChild(productDiv);
+                }
+            });
+        }
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('dark');
+    }
+
+    function logout() {
+        localStorage.removeItem('loggedInUser'); // Remove logged-in user
+        document.getElementById('authLinks').style.display = 'block'; // Show login/signup links
+        document.getElementById('logoutButton').style.display = 'none'; // Hide logout button
+        window.location.href = 'login.html'; // Redirect to login page
+    }
+
+    // Check if user is logged in
+    if (localStorage.getItem('loggedInUser')) {
+        document.getElementById('authLinks').style.display = 'none'; // Hide login/signup links
+        document.getElementById('logoutButton').style.display = 'inline'; // Show logout button
+        const user = JSON.parse(localStorage.getItem('loggedInUser'));
+        // Show create product button for owner
+        if (user.email === "pikachusousuke@gmail.com") {
+            document.getElementById('createProductBtn').style.display = 'inline';
+        }
+    }
+    
+
+    // Initial load
+    loadProducts();
+</script>
+
+</body>
+</html>
