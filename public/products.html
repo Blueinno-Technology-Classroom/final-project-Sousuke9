@@ -32,14 +32,17 @@
             right: 20px;
             top: 20px;
         }
-        nav a, .theme-toggle {
+        nav a, .theme-toggle, .cart-button {
             color: #ffffff;
             text-decoration: none;
             margin: 0 15px;
             font-size: 16px;
             transition: color 0.3s;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
-        nav a:hover, .theme-toggle:hover {
+        nav a:hover, .theme-toggle:hover, .cart-button:hover {
             color: #ffcc00; /* Highlight color on hover */
         }
         .container {
@@ -134,16 +137,17 @@
 <body>
 
 <header>
-    <h1>Welcome to Our Online Store</h1>
-    <nav>
-        <span id="authLinks">
-            <a href="login.html" id="loginLink">Login</a>
-            <a href="signup.html" id="signupLink">Sign Up</a>
-        </span>
-        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Toggle Theme</button>
-        <button class="logout-button" id="logoutButton" onclick="logout()" style="display: none;">Logout</button>
-    </nav>
+    <h1>Store</h1>
 </header>
+<nav>
+    <span id="authLinks">
+        <a href="login.html" id="loginLink">Login</a>
+        <a href="signup.html" id="signupLink">Sign Up</a>
+    </span>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Toggle Theme</button>
+    <button class="cart-button" onclick="goToCart()">View Cart</button>
+    <button class="logout-button" id="logoutButton" onclick="logout()" style="display: none;">Logout</button>
+</nav>
 
 <div class="container">
     <div class="search">
@@ -151,44 +155,51 @@
     </div>
     <h2>Our Products</h2>
     <div class="products" id="productList"></div>
-    <button class="create-product-button" id="createProductBtn" style="display: none;" onclick="createProduct()">Create New Product</button>
 </div>
 
 <footer>
-    <p>&copy; 2024 Online Store</p>
+    <p>Copyright &copy; 2024 Sousuke9</p>
 </footer>
 
 <script>
-    function loadProducts() {
-        const products = JSON.parse(localStorage.getItem('products')) || [];
+    async function loadProducts() {
+        const response = await fetch('products.json');
+        const products = await response.json();
         const productList = document.getElementById('productList');
         productList.innerHTML = ''; // Clear existing products
+        const user = JSON.parse(localStorage.getItem('loggedInUser'));
+
         products.forEach((product, index) => {
             const productDiv = document.createElement('div');
             productDiv.className = 'product';
-            productDiv.innerHTML = `<h3><a href="product.html?id=${index}">${product.name}</a></h3><p>$20.00</p>`;
+            productDiv.innerHTML = `
+                <h3><a href="product.html?id=${index}">${product.name}</a></h3>
+                <p>$${parseFloat(product.price).toFixed(2)}</p>
+            `;
             productList.appendChild(productDiv);
         });
     }
 
     function searchProducts() {
         const query = document.getElementById('searchInput').value.toLowerCase();
-        const products = JSON.parse(localStorage.getItem('products')) || [];
         const productList = document.getElementById('productList');
         productList.innerHTML = ''; // Clear existing products
 
-        if (query === "") {
-            loadProducts(); // Show all products if no search query
-        } else {
-            products.forEach((product, index) => {
-                if (product.name.toLowerCase().includes(query)) {
-                    const productDiv = document.createElement('div');
-                    productDiv.className = 'product';
-                    productDiv.innerHTML = `<h3><a href="product.html?id=${index}">${product.name}</a></h3><p>$20.00</p>`;
-                    productList.appendChild(productDiv);
-                }
+        fetch('products.json')
+            .then(response => response.json())
+            .then(products => {
+                products.forEach((product, index) => {
+                    if (product.name.toLowerCase().includes(query)) {
+                        const productDiv = document.createElement('div');
+                        productDiv.className = 'product';
+                        productDiv.innerHTML = `
+                            <h3><a href="product.html?id=${index}">${product.name}</a></h3>
+                            <p>$${parseFloat(product.price).toFixed(2)}</p>
+                        `;
+                        productList.appendChild(productDiv);
+                    }
+                });
             });
-        }
     }
 
     function toggleTheme() {
@@ -199,20 +210,20 @@
         localStorage.removeItem('loggedInUser'); // Remove logged-in user
         document.getElementById('authLinks').style.display = 'block'; // Show login/signup links
         document.getElementById('logoutButton').style.display = 'none'; // Hide logout button
+        loadProducts(); // Reload products to reflect changes
         window.location.href = 'login.html'; // Redirect to login page
     }
 
+    function goToCart() {
+        window.location.href = 'cart.html'; // Redirect to cart page
+    }
+
     // Check if user is logged in
-    if (localStorage.getItem('loggedInUser')) {
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (user) {
         document.getElementById('authLinks').style.display = 'none'; // Hide login/signup links
         document.getElementById('logoutButton').style.display = 'inline'; // Show logout button
-        const user = JSON.parse(localStorage.getItem('loggedInUser'));
-        // Show create product button for owner
-        if (user.email === "pikachusousuke@gmail.com") {
-            document.getElementById('createProductBtn').style.display = 'inline';
-        }
     }
-    
 
     // Initial load
     loadProducts();

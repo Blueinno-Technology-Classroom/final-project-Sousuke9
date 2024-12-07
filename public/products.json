@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Air 1.0",
+        "price": 19.99,
+        "description": "Its fresh air from the middle of the city! Its 200ml of air per bag. Best product ever!",
+        "photo": "https://media.istockphoto.com/id/187431023/photo/air-in-plastic-bag.jpg?s=612x612&w=0&k=20&c=y_Rhb0jwASdTAo-SgwoZQ6dKXFI_L1PC6PcqC9roTG0="
+    },
+    {
+        "name": "Air 2.0",
+        "price": 29.99,
+        "description": "This time its fresh air from the jungle, we had a lot of complains that Air 1.0 is full of co2. Now its the best prouct ever!",
+        "photo": "https://media.istockphoto.com/id/187431023/photo/air-in-plastic-bag.jpg?s=612x612&w=0&k=20&c=y_Rhb0jwASdTAo-SgwoZQ6dKXFI_L1PC6PcqC9roTG0="
+    },
+    {
+        "name": "Pokeman",
+        "price": 39.99,
+        "description": "Its Pokeman! Not Pokemon. Its 1000x better than pokemon. Catch them all! ",
+        "photo": "file:///Users/sousukechua/Desktop/Screenshot%202024-11-30%20at%202.51.50%E2%80%AFPM.png"
+    }
+]
